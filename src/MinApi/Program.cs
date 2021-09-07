@@ -1,5 +1,6 @@
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Dapper;
 using FluentValidation;
@@ -51,25 +52,47 @@ async Task EnsureDb(IServiceProvider services, ILogger logger)
 
 public static class Dispatch
 {
-    public static Task<IResult> FromBody<TCommand>(TCommand command, IMediator mediator, CancellationToken cancellationToken)
+    public static Task<IResult> Command<TCommand>(TCommand command, IMediator mediator, CancellationToken cancellationToken)
         where TCommand : IRequest<IResult>
             => mediator.Send(command, cancellationToken);
 
-    public static Task<IResult> FromRouteWithId<TCommand>(IdCommand<TCommand> id, IMediator mediator, CancellationToken cancellationToken)
+    public static Task<IResult> CommandById<TCommand>(IdCommand<TCommand> id, IMediator mediator, CancellationToken cancellationToken)
         where TCommand : IRequest<IResult>, IIdCommand<TCommand>
+            => mediator.Send(id.Value, cancellationToken);
+
+    public static Task<IResult> Query<TQuery>(TQuery query, IMediator mediator, CancellationToken cancellationToken)
+        where TQuery : IRequest<IResult>, IExtensionBinder<TQuery>
+            => mediator.Send(query, cancellationToken);
+
+    public static Task<IResult> QueryById<TQuery>(IdCommand<TQuery> id, IMediator mediator, CancellationToken cancellationToken)
+        where TQuery : IRequest<IResult>, IIdCommand<TQuery>
             => mediator.Send(id.Value, cancellationToken);
 }
 
-public interface IParseable<T>
+// Credit: https://github.com/DamianEdwards/MinimalApiPlayground
+public interface IParseable<TSelf>
 {
-    static abstract bool TryParse([NotNullWhen(true)] string? value, IFormatProvider? provider, out T result);
+    static abstract bool TryParse([NotNullWhen(true)] string? value, IFormatProvider? provider, out TSelf result);
 }
 
+public interface IExtensionBinder<TSelf> where TSelf : IExtensionBinder<TSelf>
+{
+    static abstract ValueTask<TSelf?> BindAsync(HttpContext context, ParameterInfo parameter);
+}
+
+/// <summary>
+/// Interface for commands that can be created using an ID route parameter
+/// </summary>
+/// <typeparam name="TCommand"></typeparam>
 public interface IIdCommand<TCommand>
 {
     static abstract TCommand Create(long id);
 }
 
+/// <summary>
+/// Wrapper class to invoke the factory method of the inner command with the id route parameter
+/// </summary>
+/// <typeparam name="TCommand"></typeparam>
 public class IdCommand<TCommand> : IParseable<IdCommand<TCommand>>
     where TCommand : IIdCommand<TCommand>
 {

@@ -22,7 +22,7 @@ GET http://localhost:5000/todos?include-completed=false&page-size=100 HTTP/1.1
 GET http://localhost:5000/todos?include-completed=true&page-size=100 HTTP/1.1
 
 ### Page Todos
-GET http://localhost:5000/todos?page=1&page-size=5 HTTP/1.1
+GET http://localhost:5000/todos?page=1&page-size=3 HTTP/1.1
 
 ### Get Todo by ID
 @todoId = {{add_todo.response.body.$.id}}

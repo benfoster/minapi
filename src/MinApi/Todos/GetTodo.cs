@@ -1,3 +1,5 @@
+using System.Data;
+using Dapper;
 using MediatR;
 
 namespace MinApi.Todos;
@@ -8,9 +10,20 @@ public class GetTodo
 
     public class Handler : IRequestHandler<Command, IResult>
     {
-        public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
+        private readonly IDbConnection _db;
+
+        public Handler(IDbConnection db)
         {
-            return Results.Ok();
+            _db = db;
+        }        
+        
+        public async Task<IResult> Handle(Command command, CancellationToken cancellationToken)
+        {
+            string sql = "SELECT * FROM todos WHERE id = @id";
+
+            return await _db.QueryFirstAsync<Todo>(sql, new { id = command.Id }) is Todo todo
+                ? Results.Ok(todo)
+                : Results.NotFound();
         }
     }
 }

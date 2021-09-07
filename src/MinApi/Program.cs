@@ -30,7 +30,9 @@ async Task EnsureDb(IServiceProvider services, ILogger logger)
         CREATE TABLE IF NOT EXISTS todos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            completed INTEGER DEFAULT 0 NOT NULL CHECK(completed IN (0, 1))
+            completed INTEGER DEFAULT 0 NOT NULL CHECK(completed IN (0, 1)),
+            created_on TEXT NOT NULL,
+            completed_on TEXT NULL
         );";
     
     await db.ExecuteAsync(sql);

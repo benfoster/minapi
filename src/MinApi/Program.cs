@@ -56,7 +56,7 @@ public static class Dispatch
         where TCommand : IRequest<IResult>
             => mediator.Send(command, cancellationToken);
 
-    public static Task<IResult> CommandById<TCommand>(IdCommand<TCommand> id, IMediator mediator, CancellationToken cancellationToken)
+    public static Task<IResult> CommandWithId<TCommand>(IdCommand<TCommand> id, IMediator mediator, CancellationToken cancellationToken)
         where TCommand : IRequest<IResult>, IIdCommand<TCommand>
             => mediator.Send(id.Value, cancellationToken);
 
@@ -64,7 +64,7 @@ public static class Dispatch
         where TQuery : IRequest<IResult>, IExtensionBinder<TQuery>
             => mediator.Send(query, cancellationToken);
 
-    public static Task<IResult> QueryById<TQuery>(IdCommand<TQuery> id, IMediator mediator, CancellationToken cancellationToken)
+    public static Task<IResult> QueryWithId<TQuery>(IdCommand<TQuery> id, IMediator mediator, CancellationToken cancellationToken)
         where TQuery : IRequest<IResult>, IIdCommand<TQuery>
             => mediator.Send(id.Value, cancellationToken);
 }

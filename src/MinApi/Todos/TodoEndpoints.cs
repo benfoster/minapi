@@ -10,13 +10,13 @@ public static class TodoEndpoints
         endpoints.MapGet("/todos", Dispatch.Query<ListTodos.Query>)
             .WithName(nameof(GetTodo));
 
-        endpoints.MapGet("/todos/{id}", Dispatch.CommandById<GetTodo.Query>)
+        endpoints.MapGet("/todos/{id}", Dispatch.QueryWithId<GetTodo.Query>)
             .WithName(nameof(GetTodo));
 
-        endpoints.MapDelete("/todos/{id}", Dispatch.CommandById<RemoveTodo.Command>)
+        endpoints.MapDelete("/todos/{id}", Dispatch.CommandWithId<RemoveTodo.Command>)
             .WithName(nameof(RemoveTodo));
 
-        endpoints.MapPut("/todos/{id}/complete", Dispatch.CommandById<CompleteTodo.Command>)
+        endpoints.MapPut("/todos/{id}/complete", Dispatch.CommandWithId<CompleteTodo.Command>)
             .WithName(nameof(CompleteTodo));
     }
 }

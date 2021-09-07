@@ -12,6 +12,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(
 
 var connectionString = builder.Configuration.GetConnectionString("TodoDb") ?? "Data Source=todos.db";
 builder.Services.AddScoped<IDbConnection>(_ => new SqliteConnection(connectionString));
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var app = builder.Build();
 await EnsureDb(app.Services, app.Logger);
@@ -31,8 +32,8 @@ async Task EnsureDb(IServiceProvider services, ILogger logger)
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             completed INTEGER DEFAULT 0 NOT NULL CHECK(completed IN (0, 1)),
-            created_on TEXT NOT NULL,
-            completed_on TEXT NULL
+            created_on DATETIME NOT NULL,
+            completed_on DATETIME NULL
         );";
     
     await db.ExecuteAsync(sql);

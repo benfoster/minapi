@@ -1,8 +1,16 @@
 ###
 
+# @name add_todo
 POST http://localhost:5000/todos HTTP/1.1
 content-type: application/json
 
 {
-    "title": "Put out the trash"
+    "title": "Put out the trash "
 }
+
+###
+
+@todoId = {{add_todo.response.body.$.id}}
+GET http://localhost:5000/todos/{{todoId}} HTTP/1.1
+
+###

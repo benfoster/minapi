@@ -1,7 +1,9 @@
 using System.Data;
+using System.Text.Json.Serialization;
 using Dapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(
     lifetime: ServiceLifetime.Scoped);
+
+builder.Services.Configure<JsonOptions>(opt =>
+{
+    opt.SerializerOptions.PropertyNamingPolicy = new SnakeCaseNamingPolicy();
+    opt.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 
 var connectionString = builder.Configuration.GetConnectionString("TodoDb") ?? "Data Source=todos.db";
 builder.Services.AddScoped<IDbConnection>(_ => new SqliteConnection(connectionString));

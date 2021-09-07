@@ -5,10 +5,8 @@ public static class TodoEndpoints
 {
     public static void MapTodo(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/todos", async (AddTodo.Command command, IMediator mediator, CancellationToken cancellationToken)
-            => await mediator.Send(command, cancellationToken)
-        )
-        .WithName(nameof(AddTodo));
+        endpoints.MapPost("/todos", Dispatch.Command<AddTodo.Command>)
+            .WithName(nameof(AddTodo));
 
         endpoints.MapGet("/todos", async (HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken) =>
         {

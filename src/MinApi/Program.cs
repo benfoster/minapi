@@ -46,3 +46,11 @@ async Task EnsureDb(IServiceProvider services, ILogger logger)
     
     await db.ExecuteAsync(sql);
 }
+
+
+public static class Dispatch
+{
+    public static Task<IResult> Command<TCommand>(TCommand command, IMediator mediator, CancellationToken cancellationToken) 
+        where TCommand : IRequest<IResult>
+            => mediator.Send(command, cancellationToken);
+}

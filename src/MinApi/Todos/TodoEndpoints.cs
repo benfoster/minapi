@@ -5,7 +5,7 @@ public static class TodoEndpoints
 {
     public static void MapTodo(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/todos", Dispatch.Command<AddTodo.Command>)
+        endpoints.MapPost("/todos", Dispatch.FromBody<AddTodo.Command>)
             .WithName(nameof(AddTodo));
 
         endpoints.MapGet("/todos", async (HttpRequest httpRequest, IMediator mediator, CancellationToken cancellationToken) =>
@@ -24,19 +24,13 @@ public static class TodoEndpoints
         })
         .WithName(nameof(GetTodo));
 
-        endpoints.MapGet("/todos/{id}", async (long id, IMediator mediator, CancellationToken cancellationToken)
-            => await mediator.Send(new GetTodo.Query(id), cancellationToken)
-        )
-        .WithName(nameof(GetTodo));
+        endpoints.MapGet("/todos/{id}", Dispatch.FromRouteWithId<GetTodo.Query>)
+            .WithName(nameof(GetTodo));
 
-        endpoints.MapDelete("/todos/{id}", async (long id, IMediator mediator, CancellationToken cancellationToken)
-            => await mediator.Send(new RemoveTodo.Command(id), cancellationToken)
-        )
-        .WithName(nameof(RemoveTodo));
+        endpoints.MapDelete("/todos/{id}", Dispatch.FromRouteWithId<RemoveTodo.Command>)
+            .WithName(nameof(RemoveTodo));
 
-        endpoints.MapPut("/todos/{id}/complete", async (long id, IMediator mediator, CancellationToken cancellationToken)
-            => await mediator.Send(new CompleteTodo.Command(id), cancellationToken)
-        )
-        .WithName(nameof(CompleteTodo));
+        endpoints.MapPut("/todos/{id}/complete", Dispatch.FromRouteWithId<CompleteTodo.Command>)
+            .WithName(nameof(CompleteTodo));
     }
 }

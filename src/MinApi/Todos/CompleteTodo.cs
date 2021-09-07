@@ -6,9 +6,10 @@ namespace MinApi.Todos;
 
 public class CompleteTodo
 {
-    public record Command(long Id) : IRequest<IResult>
+    public record Command(long Id) : IRequest<IResult>, IIdCommand<Command>
     {
         public DateTime CompletedOn { get; } = DateTime.UtcNow;
+        public static Command Create(long id) => new(id);
     }
 
     public class Handler : IRequestHandler<Command, IResult>

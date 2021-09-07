@@ -6,7 +6,10 @@ namespace MinApi.Todos;
 
 public class GetTodo
 {
-    public record Query(long Id) : IRequest<IResult>;
+    public record Query(long Id) : IRequest<IResult>, IIdCommand<Query>
+    {
+        public static Query Create(long id) => new(id);
+    }
 
     public class Handler : IRequestHandler<Query, IResult>
     {
@@ -15,8 +18,8 @@ public class GetTodo
         public Handler(IDbConnection db)
         {
             _db = db;
-        }        
-        
+        }
+
         public async Task<IResult> Handle(Query query, CancellationToken cancellationToken)
         {
             string sql = "SELECT * FROM todos WHERE id = @Id";

@@ -14,3 +14,8 @@ content-type: application/json
 GET http://localhost:5000/todos/{{todoId}} HTTP/1.1
 
 ###
+
+@todoId = {{add_todo.response.body.$.id}}
+DELETE http://localhost:5000/todos/{{todoId}} HTTP/1.1
+
+###

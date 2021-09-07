@@ -6,9 +6,9 @@ namespace MinApi.Todos;
 
 public class GetTodo
 {
-    public record Command(long Id) : IRequest<IResult>;
+    public record Query(long Id) : IRequest<IResult>;
 
-    public class Handler : IRequestHandler<Command, IResult>
+    public class Handler : IRequestHandler<Query, IResult>
     {
         private readonly IDbConnection _db;
 
@@ -17,11 +17,11 @@ public class GetTodo
             _db = db;
         }        
         
-        public async Task<IResult> Handle(Command command, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Query query, CancellationToken cancellationToken)
         {
-            string sql = "SELECT * FROM todos WHERE id = @id";
+            string sql = "SELECT * FROM todos WHERE id = @Id";
 
-            return await _db.QueryFirstAsync<Todo>(sql, new { id = command.Id }) is Todo todo
+            return await _db.QueryFirstOrDefaultAsync<Todo>(sql, query) is Todo todo
                 ? Results.Ok(todo)
                 : Results.NotFound();
         }

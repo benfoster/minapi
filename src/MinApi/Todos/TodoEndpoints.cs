@@ -19,5 +19,10 @@ public static class TodoEndpoints
             => await mediator.Send(new RemoveTodo.Command(id), cancellationToken)
         )
         .WithName(nameof(RemoveTodo));
+
+        endpoints.MapPut("/todos/{id}/complete", async (long id, IMediator mediator, CancellationToken cancellationToken)
+            => await mediator.Send(new CompleteTodo.Command(id), cancellationToken)
+        )
+        .WithName(nameof(CompleteTodo));
     }
 }

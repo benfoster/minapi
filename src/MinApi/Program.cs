@@ -5,11 +5,13 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Data.Sqlite;
+using MinApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Transient);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 builder.Services.Configure<JsonOptions>(opt =>
 {

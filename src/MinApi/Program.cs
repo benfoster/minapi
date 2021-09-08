@@ -9,8 +9,7 @@ using Microsoft.Data.Sqlite;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
-builder.Services.AddValidatorsFromAssemblyContaining<Program>(
-    lifetime: ServiceLifetime.Scoped);
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Transient);
 
 builder.Services.Configure<JsonOptions>(opt =>
 {

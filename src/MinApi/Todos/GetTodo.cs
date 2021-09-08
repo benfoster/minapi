@@ -6,12 +6,12 @@ namespace MinApi.Todos;
 
 public class GetTodo
 {
-    public record Query(long Id) : IRequest<IResult>, IIdCommand<Query>
+    public record Request : IRequest<IResult>, IIdRequest
     {
-        public static Query Create(long id) => new(id);
+        public long Id { get; init; }
     }
 
-    public class Handler : IRequestHandler<Query, IResult>
+    public class Handler : IRequestHandler<Request, IResult>
     {
         private readonly IDbConnection _db;
 
@@ -20,7 +20,7 @@ public class GetTodo
             _db = db;
         }
 
-        public async Task<IResult> Handle(Query query, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Request query, CancellationToken cancellationToken)
         {
             string sql = "SELECT * FROM todos WHERE id = @Id";
 

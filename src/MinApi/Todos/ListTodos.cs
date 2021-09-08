@@ -7,16 +7,16 @@ namespace MinApi.Todos;
 
 public class ListTodos
 {
-    public record Query(bool IncludeCompleted, int Page, int PageSize)
-        : IRequest<IResult>, IExtensionBinder<Query>
+    public record Request(bool IncludeCompleted, int Page, int PageSize)
+        : IRequest<IResult>, IExtensionBinder<Request>
     {
-        public static ValueTask<Query?> BindAsync(HttpContext context, ParameterInfo parameter)
+        public static ValueTask<Request?> BindAsync(HttpContext context, ParameterInfo parameter)
         {
             bool.TryParse(context.Request.Query["include-completed"], out bool includeCompleted);
             int.TryParse(context.Request.Query["page"], out int page);
             int.TryParse(context.Request.Query["page-size"], out int pageSize);
             
-            return ValueTask.FromResult<ListTodos.Query?>(new(
+            return ValueTask.FromResult<ListTodos.Request?>(new(
                 includeCompleted,
                 page == 0 ? 1 : page,
                 pageSize == 0 ? 10 : pageSize
@@ -24,7 +24,7 @@ public class ListTodos
         }
     }
 
-    public class Handler : IRequestHandler<Query, IResult>
+    public class Handler : IRequestHandler<Request, IResult>
     {
         private readonly IDbConnection _db;
 
@@ -33,7 +33,7 @@ public class ListTodos
             _db = db;
         }        
         
-        public async Task<IResult> Handle(Query query, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Request query, CancellationToken cancellationToken)
         {
             string sql = @"
                 SELECT * FROM todos 

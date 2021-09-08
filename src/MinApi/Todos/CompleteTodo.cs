@@ -6,13 +6,13 @@ namespace MinApi.Todos;
 
 public class CompleteTodo
 {
-    public record Command(long Id) : IRequest<IResult>, IIdCommand<Command>
+    public record Request : IRequest<IResult>, IIdRequest
     {
+        public long Id { get; init; }
         public DateTime CompletedOn { get; } = DateTime.UtcNow;
-        public static Command Create(long id) => new(id);
     }
 
-    public class Handler : IRequestHandler<Command, IResult>
+    public class Handler : IRequestHandler<Request, IResult>
     {
         private readonly IDbConnection _db;
 
@@ -21,7 +21,7 @@ public class CompleteTodo
             _db = db;
         }
 
-        public async Task<IResult> Handle(Command command, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Request command, CancellationToken cancellationToken)
         {
             string sql = @"UPDATE todos SET completed = true, completed_on = @CompletedOn WHERE id = @Id";
 

@@ -9,9 +9,9 @@ namespace MinApi.Todos;
 
 public class AddTodo
 {
-    public record Command : IRequest<IResult>
+    public record Request : IRequest<IResult>
     {
-        public Command(string title, bool completed, DateTime? completedOn)
+        public Request(string title, bool completed, DateTime? completedOn)
         {
             Title = title;
             Completed = completed || completedOn.HasValue;
@@ -30,7 +30,7 @@ public class AddTodo
         public DateTime CreatedOn { get; }
     }
 
-    public class Validator : AbstractValidator<AddTodo.Command>
+    public class Validator : AbstractValidator<AddTodo.Request>
     {
         public Validator()
         {
@@ -38,18 +38,18 @@ public class AddTodo
         }
     }
 
-    public class Handler : IRequestHandler<Command, IResult>
+    public class Handler : IRequestHandler<Request, IResult>
     {
-        private readonly IValidator<Command> _validator;
+        private readonly IValidator<Request> _validator;
         private readonly IDbConnection _db;
 
-        public Handler(IValidator<Command> validator, IDbConnection db)
+        public Handler(IValidator<Request> validator, IDbConnection db)
         {
             _validator = validator;
             _db = db;
         }
 
-        public async Task<IResult> Handle(Command command, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Request command, CancellationToken cancellationToken)
         {
             ValidationResult result = _validator.Validate(command);
 

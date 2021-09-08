@@ -6,12 +6,12 @@ namespace MinApi.Todos;
 
 public class RemoveTodo
 {
-    public record Command(long Id) : IRequest<IResult>, IIdCommand<Command>
+    public record Request : IRequest<IResult>, IIdRequest
     {
-        public static Command Create(long id) => new(id);
+        public long Id { get; init; }
     }
 
-    public class Handler : IRequestHandler<Command, IResult>
+    public class Handler : IRequestHandler<Request, IResult>
     {
         private readonly IDbConnection _db;
 
@@ -20,7 +20,7 @@ public class RemoveTodo
             _db = db;
         }
 
-        public async Task<IResult> Handle(Command command, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(Request command, CancellationToken cancellationToken)
         {
             string sql = @"DELETE FROM todos WHERE id = @Id";
 

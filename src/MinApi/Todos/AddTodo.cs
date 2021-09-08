@@ -29,7 +29,7 @@ public class AddTodo
         public DateTime CreatedOn { get; }
     }
 
-    public class Validator : AbstractValidator<AddTodo.Request>
+    public class Validator : AbstractValidator<Request>
     {
         public Validator()
         {

@@ -1,14 +1,16 @@
 using System.Data;
 using System.Reflection;
 using Dapper;
+using FluentValidation;
 using MediatR;
+using MinApi.Validation;
 
 namespace MinApi.Todos;
 
 public class ListTodos
 {
     public record Request(bool IncludeCompleted, int Page, int PageSize)
-        : IRequest<IResult>, IExtensionBinder<Request>
+        : IRequest<IResult>, IExtensionBinder<Request>, IValidateable
     {
         public static ValueTask<Request?> BindAsync(HttpContext context, ParameterInfo parameter)
         {
@@ -21,6 +23,15 @@ public class ListTodos
                 page == 0 ? 1 : page,
                 pageSize == 0 ? 10 : pageSize
             ));
+        }
+    }
+
+    public class Validator : AbstractValidator<Request>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Page).GreaterThan(0).WithMessage("page_invalid");
+            RuleFor(x => x.PageSize).GreaterThan(0).WithMessage("page_size_invalid");
         }
     }
 

@@ -17,7 +17,7 @@ public class RemoveTodo
 
         public Handler(IDbConnection db)
         {
-            _db = db;
+            _db = db.NotNull(nameof(db));
         }
 
         public async Task<IResult> Handle(Request command, CancellationToken cancellationToken)

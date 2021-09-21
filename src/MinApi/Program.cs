@@ -1,3 +1,5 @@
+global using O9d.Guard;
+
 using System.Data;
 using System.Text.Json.Serialization;
 using Dapper;
@@ -6,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Data.Sqlite;
 using MinApi.Validation;
+using O9d.Json.Formatting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +18,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBeh
 
 builder.Services.Configure<JsonOptions>(opt =>
 {
-    opt.SerializerOptions.PropertyNamingPolicy = new SnakeCaseNamingPolicy();
+    opt.SerializerOptions.PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy();
     opt.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 

@@ -9,8 +9,13 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
     <PackageReference Include="FluentValidation" Version="10.3.3"/>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.3"/>
-    <PackageReference Include="Dapper" Version="2.0.90" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0-rc.1.*" />
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.0.5" />
+    <PackageReference Include="Dapper" Version="2.0.90"/>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0-rc.1.*"/>
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.0.5"/>
+    <PackageReference Include="O9d.Guard" Version="0.0.5"/>
+    <PackageReference Include="O9d.Json.Formatting" Version="0.1.0"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="o9d.Guard"/>
   </ItemGroup>
 </Project>
